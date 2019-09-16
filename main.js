@@ -17,7 +17,7 @@ const outputStride = 16;
 const flipHorizontal = false;
 const defaultQuantBytes = 2;
 
-const defaultMobileNetMultiplier =  0.75;
+const defaultMobileNetMultiplier = 0.75;
 const defaultMobileNetStride = 16;
 const defaultMobileNetInputResolution = 801;
 
@@ -54,7 +54,7 @@ let guiState = {
  */
 
 
-const single_image_single_pose = async() => {
+const single_image_single_pose = async () => {
     console.log('Starting Pose Estimation for a Single Image');
     const net = await posenet.load({
         architecture: guiState.model.architecture,
@@ -68,13 +68,13 @@ const single_image_single_pose = async() => {
     // Provide the path to your Image
     img.src = 'frame4.png';
     const canvas = createCanvas(img.width, img.height);
-    console.log("Image Height : "+img.height + " Image Width : "+img.width);
+    console.log("Image Height : " + img.height + " Image Width : " + img.width);
     const ctx = canvas.getContext('2d');
     ctx.drawImage(img, 0, 0);
     const input = tf.browser.fromPixels(canvas);
     const pose = await net.estimateSinglePose(input, imageScaleFactor, flipHorizontal, outputStride);
     // console.log(pose);
-    for(const keypoint of pose.keypoints) {
+    for (const keypoint of pose.keypoints) {
         console.log(`${keypoint.part}: (${keypoint.position.x},${keypoint.position.y})`);
     }
 
@@ -83,29 +83,13 @@ const single_image_single_pose = async() => {
         if (err) {
             console.error(err);
             return;
-        };
+        }
+        ;
         console.log("File has been created");
     });
     console.log('Ending Pose Estimation for a Single Image');
-}
+};
 
-
-async function video_based_pose_detection() {
-    console.log("Starting to record the poses in a video.");
-    let poses = [];
-    /*    const pose_net = await posenet.load({
-            architecture: guiState.model.architecture,
-            outputStride: guiState.model.outputStride,
-            inputResolution: guiState.model.inputResolution,
-            multiplier: guiState.model.multiplier,
-            quantBytes: guiState.model.quantBytes
-        });*/
-    const dom = new JSDOM('<video></video>');
-
-}
-
-//single_image_single_pose();
-//video_based_pose_detection();
 
 // Path to the location where frames of a particular video file is stored
 photo_path = "D:/Computer Engineering/Continuous Sign Translation/utterances/1/";
@@ -116,7 +100,7 @@ photo_path = "D:/Computer Engineering/Continuous Sign Translation/utterances/1/"
  * @param path_to_frames
  * @returns {Promise<void>}
  */
-async function cascading_images_pose_estimation(path_to_frames){
+async function cascading_images_pose_estimation(path_to_frames) {
     console.log("Starting to estimate pose values for list of images in the given path : " + path_to_frames);
     let length = fs.readdirSync(path_to_frames).length;
     console.log("Loading posenet model: mobilenet");
@@ -134,7 +118,7 @@ async function cascading_images_pose_estimation(path_to_frames){
     let pose;
     let pose_list = [];
 
-    for(let i=0;i<length-1;i++){
+    for (let i = 0; i < length - 1; i++) {
         let image = new Image();
         image.src = path_to_frames + i + ".png";
         canvas = createCanvas(image.width, image.height);
@@ -144,13 +128,12 @@ async function cascading_images_pose_estimation(path_to_frames){
         pose = await single_net.estimateSinglePose(input, imageScaleFactor, flipHorizontal, outputStride);
         pose_list.push(pose);
     }
-    console.log("File Names are collected");
-    fs.writeFile(photo_path+"object_all.json", JSON.stringify(pose_list), (err) => {
+    fs.writeFile(photo_path + "key_points.json", JSON.stringify(pose_list), (err) => {
         if (err) {
             console.error(err);
             return;
-        };
-        console.log("File has been created");
+        }
+        console.log("Key Points file has been created");
     });
 }
 
