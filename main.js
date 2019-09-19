@@ -29,7 +29,7 @@ const defaultResNetInputResolution = 257;
 let guiState = {
     net: null,
     model: {
-        architecture: 'MobileNetV1',
+        architecture: 'ResNet50',
         outputStride: defaultMobileNetStride,
         inputResolution: defaultMobileNetInputResolution,
         multiplier: defaultMobileNetMultiplier,
@@ -108,7 +108,7 @@ async function cascading_images_pose_estimation(path_to_frames) {
         architecture: guiState.model.architecture,
         outputStride: guiState.model.outputStride,
         inputResolution: guiState.model.inputResolution,
-        multiplier: guiState.model.multiplier,
+       // multiplier: guiState.model.multiplier,
         quantBytes: guiState.model.quantBytes
     });
 
@@ -119,14 +119,15 @@ async function cascading_images_pose_estimation(path_to_frames) {
     let pose_list = [];
 
     for (let i = 0; i < length - 1; i++) {
-        let image = new Image();
-        image.src = path_to_frames + i + ".png";
+        let image = await loadImage(path_to_frames + i + ".png");
+/*        let image = new Image();
+        image.src = path_to_frames + i + ".png"; */
         canvas = createCanvas(image.width, image.height);
         ctx = canvas.getContext('2d');
         ctx.drawImage(image, 0, 0);
         input = tf.browser.fromPixels(canvas);
         pose = await single_net.estimateSinglePose(input, imageScaleFactor, flipHorizontal, outputStride);
-        pose_list.push(pose);
+        pose_list.push([i, pose]);
     }
     fs.writeFile(photo_path + "key_points.json", JSON.stringify(pose_list), (err) => {
         if (err) {
@@ -135,6 +136,18 @@ async function cascading_images_pose_estimation(path_to_frames) {
         }
         console.log("Key Points file has been created");
     });
+}
+
+
+async function loadImage(path){
+    let image = new Image();
+    const promise = new Promise((resolve, reject) => {
+        image.onload = () => {
+            resolve(image);
+        };
+    });
+    image.src = path;
+    return promise;
 }
 
 // Call this function to estimate poses for a set of picture frames
