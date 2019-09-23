@@ -15,7 +15,7 @@ let fs = require('fs');
 const imageScaleFactor = 0.5;
 const outputStride = 16;
 const flipHorizontal = false;
-const defaultQuantBytes = 2;
+const defaultQuantBytes = 4;
 
 const defaultMobileNetMultiplier = 0.75;
 const defaultMobileNetStride = 16;
@@ -92,7 +92,7 @@ const single_image_single_pose = async () => {
 
 
 // Path to the location where frames of a particular video file is stored
-photo_path = "D:/Computer Engineering/Continuous Sign Translation/utterances/1/";
+photo_path = "D:/Computer Engineering/Continuous Sign Translation/utterances/DSP Dead Dog Story-007-2halt.SEARCH-FOR_partindef_/";
 
 /**
  * Asynchronous Function to decide poses for a set of images and storing it in a single json file
@@ -103,7 +103,7 @@ photo_path = "D:/Computer Engineering/Continuous Sign Translation/utterances/1/"
 async function cascading_images_pose_estimation(path_to_frames) {
     console.log("Starting to estimate pose values for list of images in the given path : " + path_to_frames);
     let length = fs.readdirSync(path_to_frames).length;
-    console.log("Loading posenet model: mobilenet");
+    console.log("Loading posenet model: ResNet");
     const single_net = await posenet.load({
         architecture: guiState.model.architecture,
         outputStride: guiState.model.outputStride,
@@ -127,7 +127,7 @@ async function cascading_images_pose_estimation(path_to_frames) {
         ctx.drawImage(image, 0, 0);
         input = tf.browser.fromPixels(canvas);
         pose = await single_net.estimateSinglePose(input, imageScaleFactor, flipHorizontal, outputStride);
-        pose_list.push([i, pose]);
+        pose_list.push(pose);
     }
     fs.writeFile(photo_path + "key_points.json", JSON.stringify(pose_list), (err) => {
         if (err) {
