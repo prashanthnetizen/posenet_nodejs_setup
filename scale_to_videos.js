@@ -44,9 +44,9 @@ let guiState = {
     showSkeleton: true,
     showBoundingBox: false,
 };
-
+ 
 // Path to the location where frames of all the video files are stored
-photo_path_to_frames = "D:/Computer Engineering/Continuous Sign Translation/utterances/";
+photo_path_to_frames = "D:/Computer Engineering/Continuous Sign Translation/test_delete/";
 
 /**
  * Asynchronous Function to decide poses for a set of images and storing it in a single json file
