@@ -44,9 +44,17 @@ let guiState = {
     showSkeleton: true,
     showBoundingBox: false,
 };
- 
+
 // Path to the location where frames of all the video files are stored
-photo_path_to_frames = "D:/Computer Engineering/Continuous Sign Translation/test_delete/";
+getArgumentValue = process.argv[2];
+if (getArgumentValue === undefined) {
+    photo_path_to_frames = "D:/Computer Engineering/Grade_CSE535/Assignment_2_videos/Tuesday/videos2prashanth/dd/";
+} else {
+    photo_path_to_frames = getArgumentValue;
+}
+
+console.log(photo_path_to_frames);
+
 
 /**
  * Asynchronous Function to decide poses for a set of images and storing it in a single json file
@@ -120,7 +128,6 @@ async function loadImage(path) {
     image.src = path;
     return promise;
 }
-
 
 readline.question(`Input your Architecture.\n 1. MobileNetV1\n 2. ResNet50\n`, (name) => {
     cascading_images_pose_estimation(photo_path_to_frames, name).then(r => console.log("Key Points generated Successfully."), () => console.log("Error occurred in generating keypoints."));
