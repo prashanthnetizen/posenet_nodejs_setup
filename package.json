@@ -14,7 +14,7 @@
     "@tensorflow/tfjs-node": "^1.2.3",
     "canvas": "^2.5.0",
     "dat.gui": "^0.7.6",
-    "jsdom": "^15.1.1",
+    "jsdom": "^16.5.0",
     "rollup": "^1.16.7"
   }
 }
